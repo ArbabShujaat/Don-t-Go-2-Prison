@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "647452955811",
+    "firebase_url": "https://don-t-go-to-prison.firebaseio.com",
+    "project_id": "don-t-go-to-prison",
+    "storage_bucket": "don-t-go-to-prison.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647452955811:android:97fd9102640682f12bdb16",
+        "android_client_info": {
+          "package_name": "com.taches.design_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647452955811-0jv4jbkas89gj4fgbgv67g7kl4bukklv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFk7zY4uEZmek4Q6K4YWzEtGboR1rYDKQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647452955811-0jv4jbkas89gj4fgbgv67g7kl4bukklv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

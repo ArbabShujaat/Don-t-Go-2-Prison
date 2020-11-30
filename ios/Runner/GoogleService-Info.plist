@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>647452955811-8i2p9p5fsdfc0sdun42nvhum0ocjn2cf.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.647452955811-8i2p9p5fsdfc0sdun42nvhum0ocjn2cf</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCM0qFgGjZSTszgh7UYmBk-fI_DPE1BuhA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>647452955811</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.taches.designApp</string>
+	<key>PROJECT_ID</key>
+	<string>don-t-go-to-prison</string>
+	<key>STORAGE_BUCKET</key>
+	<string>don-t-go-to-prison.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:647452955811:ios:21f8b72c09f3038b2bdb16</string>
+	<key>DATABASE_URL</key>
+	<string>https://don-t-go-to-prison.firebaseio.com</string>
+</dict>
+</plist>
