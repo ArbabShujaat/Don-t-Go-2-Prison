@@ -1,11 +1,13 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:date_format/date_format.dart';
 import 'package:design_app/Constants/constant.dart';
 import 'package:design_app/Models/models.dart';
 import 'package:design_app/Screens/AddtoPostScreen.dart';
 import 'package:design_app/Screens/Auth/LoginScreen.dart';
 import 'package:design_app/Screens/Settings.dart';
+import 'package:design_app/Screens/contactUs.dart';
 import 'package:design_app/Screens/otheruserprofile2.dart';
 import 'package:design_app/Screens/searchscreen.dart';
 import 'package:design_app/Screens/userprofile.dart';
@@ -26,7 +28,6 @@ import 'Search/search.dart';
 import 'stories.dart';
 import 'package:intl/intl.dart';
 
-final Color orange = Color(0XFFd45a29);
 bool isPressed = false;
 
 class MyHomePage extends StatefulWidget {
@@ -59,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final Color orange = Color(0XFFd45a29);
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: new Container(
@@ -140,13 +142,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
               ),
-              accountEmail: Text(
-                userDetails.userEmail,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white),
-              ),
+              // accountEmail: Text(
+              //   // userDetails.userEmail,
+              //   '',
+              //   style: TextStyle(
+              //       fontSize: 16,
+              //       fontWeight: FontWeight.w400,
+              //       color: Colors.white),
+              // ),
               currentAccountPicture: Container(
                 decoration: BoxDecoration(shape: BoxShape.circle),
                 child: ClipRRect(
@@ -193,6 +196,24 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: orange, icon: Icon(Icons.settings), onPressed: () {}),
               title: Text(
                 "About",
+                style: TextStyle(
+                    color: orange, fontSize: 17, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Divider(
+              color: orange,
+              height: 10,
+              thickness: 1,
+            ),
+            new ListTile(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Contact()),
+              ),
+              trailing: IconButton(
+                  color: orange, icon: Icon(Icons.message), onPressed: () {}),
+              title: Text(
+                "Contact Us",
                 style: TextStyle(
                     color: orange, fontSize: 17, fontWeight: FontWeight.bold),
               ),
@@ -308,8 +329,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                         fontSize: 18.0),
                                   ),
                                   Text(
-                                    DateFormat('EEE, M/d/y').format(
-                                        DateTime.parse(posts[index].time)),
+                                    formatDate(
+                                        DateTime.parse(posts[index].time),
+                                        [M, ' ', d, ', ', yyyy]),
                                     style: TextStyle(
                                         color: Colors.grey,
                                         fontWeight: FontWeight.bold,
@@ -327,10 +349,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                           ),
-                          // Image.network(
-                          //   posts[index].postPic,
-                          // ),
-
                           CachedNetworkImage(
                             fit: BoxFit.cover,
                             imageUrl: posts[index].postPic,

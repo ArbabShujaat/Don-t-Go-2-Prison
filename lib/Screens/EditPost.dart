@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:design_app/Constants/constant.dart';
 import 'package:design_app/Funtions.dart';
 import 'package:design_app/Models/models.dart';
+import 'package:design_app/Screens/PictureDetailScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -12,16 +13,18 @@ import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final Color orange = Color(0XFFd45a29);
+import '../main.dart';
+import 'home.dart';
 
-class AddPost extends StatefulWidget {
+class EditPost extends StatefulWidget {
   @override
-  _AddPostState createState() => _AddPostState();
+  _EditPostState createState() => _EditPostState();
 }
 
-class _AddPostState extends State<AddPost> {
+class _EditPostState extends State<EditPost> {
   File imagefile;
   File _image;
+  bool _edit = false;
   bool signupLoading = false;
   double _height;
   double _width;
@@ -29,6 +32,7 @@ class _AddPostState extends State<AddPost> {
   bool piccheck = false;
   bool postLoading = false;
   bool _loading = true;
+  bool _pictureEdit = false;
   TextEditingController captionController = TextEditingController();
   var _formKey = GlobalKey<FormState>();
 
@@ -63,6 +67,9 @@ class _AddPostState extends State<AddPost> {
                         piccheck = true;
                       });
                       if (_image != null) {
+                        setState(() {
+                          _pictureEdit = true;
+                        });
                         final FirebaseStorage _storgae = FirebaseStorage(
                             storageBucket:
                                 'gs://don-t-go-to-prison.appspot.com/');
@@ -166,6 +173,9 @@ class _AddPostState extends State<AddPost> {
               )
             });
 
+    captionController.text = postDetails[0].postCaption;
+    print(captionController.text);
+
     setState(() {
       _loading = false;
     });
@@ -179,7 +189,7 @@ class _AddPostState extends State<AddPost> {
           iconTheme: new IconThemeData(color: orange),
           centerTitle: true,
           title: Text(
-            "Add Post",
+            "Edit Post",
             style: TextStyle(color: orange),
           ),
           backgroundColor: Colors.white,
@@ -198,9 +208,9 @@ class _AddPostState extends State<AddPost> {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(
-                          "Don't Go 2 Prison Go ",
+                          "Caption",
                           style: TextStyle(
-                              color: orange,
+                              color: Colors.black,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                         ),
@@ -219,6 +229,11 @@ class _AddPostState extends State<AddPost> {
                                       decoration: BoxDecoration(
                                           border: Border.all(color: orange)),
                                       child: TextFormField(
+                                        onChanged: (a) {
+                                          setState(() {
+                                            _edit = true;
+                                          });
+                                        },
                                         validator: (val) {
                                           if (val.length == 0) {
                                             return "Caption Cannot be empty";
@@ -229,10 +244,11 @@ class _AddPostState extends State<AddPost> {
                                         textAlign: TextAlign.center,
                                         controller: captionController,
                                         decoration: new InputDecoration(
+                                          suffixIcon: Icon(Icons.edit),
                                           focusedBorder: UnderlineInputBorder(
                                               borderSide:
                                                   BorderSide(color: orange)),
-                                          hintText: "Add  Caption",
+                                          hintText: postDetails[0].postCaption,
                                           hintStyle: TextStyle(
                                               color: orange,
                                               fontWeight: FontWeight.bold),
@@ -259,27 +275,14 @@ class _AddPostState extends State<AddPost> {
                                     _image,
                                     fit: BoxFit.cover,
                                   )
-                                : Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Add Picture",
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold,
-                                            color: orange),
-                                      ),
-                                      IconButton(
-                                          alignment: Alignment.bottomLeft,
-                                          icon: Icon(
-                                            Icons.camera_enhance,
-                                            color: orange,
-                                            size: 40,
-                                          ),
-                                          onPressed: () {
-                                            _showdialogbox(context);
-                                          })
-                                    ],
+                                : InkWell(
+                                    onTap: () {
+                                      _showdialogbox(context);
+                                    },
+                                    child: Image.network(
+                                      postDetails[0].postPic,
+                                      fit: BoxFit.cover,
+                                    ),
                                   )),
                         Container(
                           child: postLoading
@@ -290,10 +293,12 @@ class _AddPostState extends State<AddPost> {
                                   shape: StadiumBorder(),
                                   color: orange,
                                   onPressed: () {
-                                    if (imagecheck &&
-                                        _formKey.currentState.validate()) {
+                                    if (_pictureEdit == false) {
+                                      imageUrl = postDetails[0].postPic;
+                                      addpost();
+                                    } else if (imagecheck) {
                                       print("Hi");
-                                      addPost();
+                                      addpost();
                                     } else {
                                       imagecheck == false
                                           ? showDialog(
@@ -327,7 +332,7 @@ class _AddPostState extends State<AddPost> {
                                     }
                                   },
                                   child: Text(
-                                    "Post",
+                                    "Update Post",
                                     style: new TextStyle(
                                         color: Colors.white, fontSize: 16),
                                   ),
@@ -337,44 +342,42 @@ class _AddPostState extends State<AddPost> {
                     ))));
   }
 
-  Future<void> addPost() async {
+  Future<void> addpost() async {
     setState(() {
       postLoading = true;
     });
 
-    PostDetails postDetails = PostDetails(
+    PostDetails postDetailsUpload = PostDetails(
         postUsername: userDetails.username,
         time: DateTime.now().toString(),
         postUserPic: userDetails.userpic,
         postUserid: userDetails.userUid,
         postPic: imageUrl,
-        postCaption: "Don't Go 2 Prison Go " + captionController.text,
+        // postCaption: _edit
+        //     ? "Don't Go 2 Prison Go " + captionController.text
+        //     : postDetails[0].postCaption,
+        postCaption: captionController.text,
         likesNumber: '0',
         commentsNumber: '0');
 
     Firebase.initializeApp();
-    await FirebaseFirestore.instance.collection("Posts").add({
-      'userName': postDetails.postUsername,
-      'userPic': postDetails.postUserPic,
-      'userUid': postDetails.postUserid,
-      'likesNumber': postDetails.likesNumber,
-      'commentsNumber': postDetails.commentsNumber,
-      'postPicture': postDetails.postPic,
-      'postCaption': postDetails.postCaption,
-      'dateTime': postDetails.time,
+    await FirebaseFirestore.instance
+        .collection("Posts")
+        .document(postDetails[0].postid)
+        .update({
+      'postPicture': postDetailsUpload.postPic,
+      'postCaption': postDetailsUpload.postCaption,
+      'dateTime': postDetailsUpload.time,
     });
 
-    await FirebaseFirestore.instance
-        .collection("Users")
-        .document(userDetails.docid)
-        .update({"Posts": (int.parse(userDetails.posts) + 1).toString()});
-    userDetails.posts = (int.parse(userDetails.posts) + 1).toString();
     posts.clear();
     await fetchtPosts();
     setState(() {
       postLoading = false;
     });
-    Navigator.pop(context);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => MyHomePage()),
+        (Route<dynamic> route) => false);
   }
 
   Future<File> pickImage(BuildContext context, ImageSource source) async {

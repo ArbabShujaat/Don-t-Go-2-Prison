@@ -9,9 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../Funtions.dart';
+import '../main.dart';
 import 'home.dart';
-
-final Color orange = Color(0XFFd45a29);
 
 class EditProfile extends StatefulWidget {
   @override
@@ -536,6 +535,8 @@ class _EditProfileState extends State<EditProfile> {
                 userpic: value.documents[0]["userimage"],
                 likes: value.documents[0]["Likes"],
                 blocked: value.documents[0]["Blocked"],
+                website: value.documents[0]["Website"],
+                bio: value.documents[0]["Bio"],
                 docid: value.documents[0].documentID,
               )
             });

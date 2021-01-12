@@ -178,6 +178,89 @@ class _LoginState extends State<Login> {
             )));
   }
 
+  Future<void> addCheckSignup() async {
+    await Firebase.initializeApp();
+    await Firestore.instance
+        .collection("Users")
+        .where("Email", isEqualTo: emailController.text)
+        .getDocuments()
+        .then((value) async => {
+              if (value.documents.length > 0)
+                {
+                  showDialog(
+                      context: context,
+                      child: AlertDialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(18.0),
+                            side: BorderSide(
+                              color: Colors.red,
+                            )),
+                        title: Text("Already Loggedin on other device"),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text(
+                              "OK",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          )
+                        ],
+                      ))
+                }
+              else
+                {
+                  await Firestore.instance.collection("Users").add({
+                    "Email": emailController.text,
+                  })
+                }
+            });
+  }
+
+  Future<void> checkLogin() async {
+    await Firebase.initializeApp();
+    Firestore.instance
+        .collection("Users")
+        .where("Email", isEqualTo: emailController.text)
+        .where("Logged In", isEqualTo: false)
+        .getDocuments()
+        .then((value) => {
+              if (value.documents.length > 0)
+                Navigator.pushReplacementNamed(context, "routeName")
+            });
+
+    Firestore.instance
+        .collection("Users")
+        .where("Email", isEqualTo: emailController.text)
+        .where("Logged In", isEqualTo: true)
+        .getDocuments()
+        .then((value) => {
+              if (value.documents.length > 0)
+                showDialog(
+                    context: context,
+                    child: AlertDialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(18.0),
+                          side: BorderSide(
+                            color: Colors.red,
+                          )),
+                      title: Text("Already Loggedin on other device"),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text(
+                            "OK",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        )
+                      ],
+                    ))
+            });
+  }
+
   Widget button() {
     return loginLoading
         ? CircularProgressIndicator()
@@ -239,6 +322,8 @@ class _LoginState extends State<Login> {
                                     userpic: value.documents[0]["userimage"],
                                     likes: value.documents[0]["Likes"],
                                     blocked: value.documents[0]["Blocked"],
+                                    website: value.documents[0]["Website"],
+                                    bio: value.documents[0]["Bio"],
                                     docid: value.documents[0].documentID)
                               });
 

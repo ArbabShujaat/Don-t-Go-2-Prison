@@ -2,9 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:design_app/Constants/constant.dart';
 
 import 'package:design_app/Models/models.dart';
 import 'package:design_app/Screens/Auth/LoginScreen.dart';
+import 'package:design_app/Screens/CropImage.dart';
+import 'package:design_app/Screens/SuggestionScreen.dart';
 import 'package:design_app/Screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -15,6 +18,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import '../../Funtions.dart';
+import '../../main.dart';
+
+bool imagecheck = false;
+bool piccheck = false;
+
+String imageUrl;
 
 class Register extends StatefulWidget {
   @override
@@ -22,22 +31,19 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  File _image;
   bool signupLoading = false;
   double _height;
   double _width;
-  bool imagecheck = false;
-  bool piccheck = false;
 
-  String imageUrl;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   TextEditingController fullnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController bioController = TextEditingController();
   TextEditingController ageContoller = TextEditingController();
-  var _formKey = GlobalKey<FormState>();
+  TextEditingController websiteController = TextEditingController();
 
-  File imagefile;
+  var _formKey = GlobalKey<FormState>();
 
   bool _obscureText = true;
   // Toggles the password show status
@@ -72,9 +78,6 @@ class _RegisterState extends State<Register> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 25.0,
-                  ),
-                  SizedBox(
                     height: 20.0,
                   ),
                   Column(
@@ -88,9 +91,9 @@ class _RegisterState extends State<Register> {
                               child: SizedBox(
                                   height: 130.0,
                                   width: 130.0,
-                                  child: (_image != null)
+                                  child: (imageSignup != null)
                                       ? Image.file(
-                                          _image,
+                                          imageSignup,
                                           fit: BoxFit.cover,
                                         )
                                       : Container(
@@ -103,72 +106,83 @@ class _RegisterState extends State<Register> {
                       ),
                       GestureDetector(
                           onTap: () async {
-                            _image =
-                                await pickImage(context, ImageSource.gallery);
-                            setState(() {
-                              piccheck = true;
-                            });
-                            if (_image != null) {
-                              print("HII");
-                              final FirebaseStorage _storgae = FirebaseStorage(
-                                  storageBucket:
-                                      'gs://don-t-go-to-prison.appspot.com');
-                              print("HII");
-                              StorageUploadTask uploadTask;
-                              String filePath = '${DateTime.now()}.png';
-                              uploadTask = _storgae
-                                  .ref()
-                                  .child(filePath)
-                                  .putFile(_image);
-                              uploadTask.onComplete.then((_) async {
-                                print(1);
-                                String url1 = await uploadTask.lastSnapshot.ref
-                                    .getDownloadURL();
-                                _image.delete().then((onValue) {
-                                  print(2);
-                                });
-                                setState(() {
-                                  imagecheck = true;
-                                });
-                                print(url1);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Cropimage()),
+                            );
+                            // imageSignup =
+                            //     await pickImage(context, ImageSource.gallery);
 
-                                imageUrl = url1;
-                              });
-                            }
+                            // setState(() {
+                            //   piccheck = true;
+                            // });
+                            // if (imageSignup != null) {
+                            //   print("HII");
+                            //   final FirebaseStorage _storgae = FirebaseStorage(
+                            //       storageBucket:
+                            //           'gs://don-t-go-to-prison.appspot.com');
+                            //   print("HII");
+                            //   StorageUploadTask uploadTask;
+                            //   String filePath = '${DateTime.now()}.png';
+                            //   uploadTask = _storgae
+                            //       .ref()
+                            //       .child(filePath)
+                            //       .putFile(imageSignup);
+                            //   uploadTask.onComplete.then((_) async {
+                            //     print(1);
+                            //     String url1 = await uploadTask.lastSnapshot.ref
+                            //         .getDownloadURL();
+                            //     imageSignup.delete().then((onValue) {
+                            //       print(2);
+                            //     });
+                            //     setState(() {
+                            //       imagecheck = true;
+                            //     });
+                            //     print(url1);
+
+                            //     imageUrl = url1;
+                            //   });
+                            // }
                           },
                           child: FlatButton.icon(
                               onPressed: () async {
-                                _image = await pickImage(
-                                    context, ImageSource.gallery);
-                                setState(() {
-                                  piccheck = true;
-                                });
-                                if (_image != null) {
-                                  final FirebaseStorage _storgae = FirebaseStorage(
-                                      storageBucket:
-                                          'gs://don-t-go-to-prison.appspot.com');
-                                  StorageUploadTask uploadTask;
-                                  String filePath = '${DateTime.now()}.png';
-                                  uploadTask = _storgae
-                                      .ref()
-                                      .child(filePath)
-                                      .putFile(_image);
-                                  uploadTask.onComplete.then((_) async {
-                                    print(1);
-                                    String url1 = await uploadTask
-                                        .lastSnapshot.ref
-                                        .getDownloadURL();
-                                    _image.delete().then((onValue) {
-                                      print(2);
-                                    });
-                                    setState(() {
-                                      imagecheck = true;
-                                    });
-                                    print(url1);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Cropimage()),
+                                );
+                                // imageSignup = await pickImage(
+                                //     context, ImageSource.gallery);
+                                // setState(() {
+                                //   piccheck = true;
+                                // });
+                                // if (imageSignup != null) {
+                                //   final FirebaseStorage _storgae = FirebaseStorage(
+                                //       storageBucket:
+                                //           'gs://don-t-go-to-prison.appspot.com');
+                                //   StorageUploadTask uploadTask;
+                                //   String filePath = '${DateTime.now()}.png';
+                                //   uploadTask = _storgae
+                                //       .ref()
+                                //       .child(filePath)
+                                //       .putFile(imageSignup);
+                                //   uploadTask.onComplete.then((_) async {
+                                //     print(1);
+                                //     String url1 = await uploadTask
+                                //         .lastSnapshot.ref
+                                //         .getDownloadURL();
+                                //     imageSignup.delete().then((onValue) {
+                                //       print(2);
+                                //     });
+                                //     setState(() {
+                                //       imagecheck = true;
+                                //     });
+                                //     print(url1);
 
-                                    imageUrl = url1;
-                                  });
-                                }
+                                //     imageUrl = url1;
+                                //   });
+                                // }
                               },
                               icon: Icon(
                                 Icons.picture_in_picture_alt,
@@ -181,7 +195,7 @@ class _RegisterState extends State<Register> {
                     ],
                   ),
                   Padding(
-                      padding: EdgeInsets.all(20.0),
+                      padding: EdgeInsets.all(10.0),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -221,48 +235,49 @@ class _RegisterState extends State<Register> {
                               ),
                             )),
                       )),
+                  // Padding(
+                  //     padding: EdgeInsets.all(10.0),
+                  //     child: Container(
+                  //       decoration: BoxDecoration(
+                  //         color: Colors.white,
+                  //         borderRadius: BorderRadius.circular(25.0),
+                  //       ),
+                  //       child: new Theme(
+                  //           data: new ThemeData(
+                  //             primaryColor: Colors.black,
+                  //             primaryColorDark: Colors.black,
+                  //           ),
+                  //           child: TextFormField(
+                  //             textAlign: TextAlign.center,
+                  //             controller: ageContoller,
+                  //             decoration: new InputDecoration(
+                  //               hintText: "Age",
+                  //               hintStyle: TextStyle(
+                  //                 color: orange,
+                  //               ),
+                  //               fillColor: orange,
+                  //               border: new OutlineInputBorder(
+                  //                 borderRadius: new BorderRadius.circular(25.0),
+                  //                 borderSide: new BorderSide(),
+                  //               ),
+                  //               //fillColor: Colors.green
+                  //             ),
+                  //             validator: (val) {
+                  //               if (val.length == 0) {
+                  //                 return "Age cannot be empty";
+                  //               } else {
+                  //                 return null;
+                  //               }
+                  //             },
+                  //             style: new TextStyle(
+                  //               color: Colors.black,
+                  //               fontFamily: "Poppins",
+                  //             ),
+                  //           )),
+                  //     )),
+
                   Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        child: new Theme(
-                            data: new ThemeData(
-                              primaryColor: Colors.black,
-                              primaryColorDark: Colors.black,
-                            ),
-                            child: TextFormField(
-                              textAlign: TextAlign.center,
-                              controller: ageContoller,
-                              decoration: new InputDecoration(
-                                hintText: "Age",
-                                hintStyle: TextStyle(
-                                  color: orange,
-                                ),
-                                fillColor: orange,
-                                border: new OutlineInputBorder(
-                                  borderRadius: new BorderRadius.circular(25.0),
-                                  borderSide: new BorderSide(),
-                                ),
-                                //fillColor: Colors.green
-                              ),
-                              validator: (val) {
-                                if (val.length == 0) {
-                                  return "Age cannot be empty";
-                                } else {
-                                  return null;
-                                }
-                              },
-                              style: new TextStyle(
-                                color: Colors.black,
-                                fontFamily: "Poppins",
-                              ),
-                            )),
-                      )),
-                  Padding(
-                      padding: EdgeInsets.all(20.0),
+                      padding: EdgeInsets.all(10.0),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -302,7 +317,7 @@ class _RegisterState extends State<Register> {
                         ),
                       )),
                   Padding(
-                      padding: EdgeInsets.all(20.0),
+                      padding: EdgeInsets.all(10.0),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -346,6 +361,90 @@ class _RegisterState extends State<Register> {
                               ),
                             )),
                       )),
+                  ////Website Link
+
+                  Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        child: new Theme(
+                            data: new ThemeData(
+                              primaryColor: Colors.black,
+                              primaryColorDark: Colors.black,
+                            ),
+                            child: TextFormField(
+                              validator: (val) {
+                                if (val.length == 0) {
+                                  return "Website cannot be empty";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              controller: websiteController,
+                              textAlign: TextAlign.center,
+                              decoration: new InputDecoration(
+                                hintText: "Enter Your Website Link",
+
+                                hintStyle: TextStyle(color: orange),
+                                fillColor: orange,
+                                border: new OutlineInputBorder(
+                                  borderRadius: new BorderRadius.circular(25.0),
+                                  borderSide: new BorderSide(),
+                                ),
+                                //fillColor: Colors.green
+                              ),
+                              style: new TextStyle(
+                                color: Colors.black,
+                                fontFamily: "Poppins",
+                              ),
+                            )),
+                      )),
+                  //////bio
+                  Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        child: new Theme(
+                            data: new ThemeData(
+                              primaryColor: Colors.black,
+                              primaryColorDark: Colors.black,
+                            ),
+                            child: TextFormField(
+                              validator: (val) {
+                                if (val.length == 0) {
+                                  return "Bio cannot be empty";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              controller: bioController,
+                              textAlign: TextAlign.center,
+                              maxLength: 130,
+                              maxLengthEnforced: true,
+                              decoration: new InputDecoration(
+                                hintText: "Enter Your Bio",
+
+                                hintStyle: TextStyle(color: orange),
+                                fillColor: orange,
+                                border: new OutlineInputBorder(
+                                  borderRadius: new BorderRadius.circular(25.0),
+                                  borderSide: new BorderSide(),
+                                ),
+                                //fillColor: Colors.green
+                              ),
+                              style: new TextStyle(
+                                color: Colors.black,
+                                fontFamily: "Poppins",
+                              ),
+                            )),
+                      )),
+
                   Container(
                     child: signupLoading
                         ? CircularProgressIndicator()
@@ -461,14 +560,16 @@ class _RegisterState extends State<Register> {
         await FirebaseFirestore.instance.collection("Users").add({
           'email': emailController.text,
           'name': fullnameController.text,
-          'age': ageContoller.text,
+          'age': "ageContoller.text",
           'useruid': user.uid,
           'userimage': imageUrl,
           'Following': "0",
           'Followers': '0',
           'Posts': "0",
           'Likes': likes,
-          'Blocked': false
+          'Blocked': false,
+          'Bio': bioController.text,
+          'Website': websiteController.text,
         });
         print(3);
         try {
@@ -490,17 +591,17 @@ class _RegisterState extends State<Register> {
                         userpic: value.documents[0]["userimage"],
                         likes: value.documents[0]["Likes"],
                         blocked: value.documents[0]["Blocked"],
+                        website: value.documents[0]["Website"],
+                        bio: value.documents[0]["Bio"],
                         docid: value.documents[0].documentID)
                   });
-          await fetchtPosts();
-          await fetchAllUsers();
         } catch (e) {
           print(e);
         }
 
         print(4);
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => MyHomePage()),
+            MaterialPageRoute(builder: (context) => SuggestionScreen()),
             (Route<dynamic> route) => false);
 
         setState(() {
@@ -508,6 +609,30 @@ class _RegisterState extends State<Register> {
         });
       }
     } catch (signUpError) {
+      setState(() {
+        signupLoading = false;
+      });
+      showDialog(
+          context: context,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(18.0),
+                side: BorderSide(
+                  color: Colors.red[400],
+                )),
+            title: Text(signUpError.message),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  "OK",
+                  style: TextStyle(color: Colors.red[400]),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          ));
       setState(() {
         signupLoading = false;
       });

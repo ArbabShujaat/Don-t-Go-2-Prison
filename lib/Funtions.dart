@@ -10,7 +10,7 @@ import 'Screens/Auth/LoginScreen.dart';
 List followingList = [];
 List<String> likes = [];
 ///////////Fetch Posts//////////////////////////
-Future<List<FetchedPostDetails>> fetchtPosts() async {
+void fetchtPosts() async {
   followingList = [];
   int length;
   try {
@@ -22,6 +22,7 @@ Future<List<FetchedPostDetails>> fetchtPosts() async {
         .getDocuments()
         .then((value) => {
               length = value.documents.length,
+              print("hahahaha"),
               print(length),
               for (int i = 0; i < length; i++)
                 {
@@ -33,6 +34,7 @@ Future<List<FetchedPostDetails>> fetchtPosts() async {
   } catch (e) {
     print(e);
   }
+  print(followingList);
   posts.clear();
   await FirebaseFirestore.instance
       .collection("Posts")
@@ -56,8 +58,6 @@ Future<List<FetchedPostDetails>> fetchtPosts() async {
         ));
     }
   });
-
-  return posts;
 }
 
 ///////////Fetct User Posts//////////////
@@ -154,69 +154,98 @@ Future<void> fetchAllUsers() async {
                   username: value.documents[i]["name"],
                   userpic: value.documents[i]["userimage"],
                   blocked: value.documents[i]["Blocked"],
+                  website: value.documents[i]["Website"],
+                  bio: value.documents[i]["Bio"],
                   docid: value.documents[i].documentID,
                 ))
               }
           });
 }
 
+////Follow User Suggestion
+Future<void> followUserSuggestion(FetchedAllUser followedUser) async {
+  print(followedUser.username);
+
+  await FirebaseFirestore.instance
+      .collection("Users")
+      .document(userDetails.docid)
+      .collection("FollowingList")
+      .add({
+    "userName": followedUser.username,
+    "userUid": followedUser.userUid,
+    "userImage": followedUser.userpic,
+  });
+
+  await FirebaseFirestore.instance
+      .collection("Users")
+      .document(userDetails.docid)
+      .update({"Following": (int.parse(userDetails.following) + 1).toString()});
+  userDetails.following = (int.parse(userDetails.following) + 1).toString();
+  print("follow user");
+
+  await FirebaseFirestore.instance
+      .collection("Users")
+      .document(followedUser.docid)
+      .collection("FollowersList")
+      .add({
+    "userName": userDetails.username,
+    "userUid": userDetails.userUid,
+    "userImage": userDetails.userpic,
+  });
+
+  print("follow user");
+
+  await FirebaseFirestore.instance
+      .collection("Users")
+      .document(followedUser.docid)
+      .update(
+          {"Followers": (int.parse(followedUser.followers) + 1).toString()});
+
+  followedUser.followers = (int.parse(followedUser.followers) + 1).toString();
+
+  print("follow user");
+  await fetchtPosts();
+}
 ////////Follow  User/////
 
 Future<void> followUser(List<FetchedAllUser> followedUser) async {
-  print(followedUser[0].userpic);
+  print(followedUser[0].username);
 
-  try {
-    await FirebaseFirestore.instance
-        .collection("Users")
-        .document(userDetails.docid)
-        .collection("FollowingList")
-        .add({
-      "userName": followedUser[0].username,
-      "userUid": followedUser[0].userUid,
-      "userImage": followedUser[0].userpic,
-    });
-  } catch (e) {
-    print("error");
-    print(e);
-  }
-  try {
-    await FirebaseFirestore.instance
-        .collection("Users")
-        .document(userDetails.docid)
-        .update(
-            {"Following": (int.parse(userDetails.following) + 1).toString()});
-    userDetails.following = (int.parse(userDetails.following) + 1).toString();
-    print("follow user");
-  } catch (e) {
-    print("error2");
-    print(e);
-  }
-  try {
-    await FirebaseFirestore.instance
-        .collection("Users")
-        .document(followedUser[0].docid)
-        .collection("FollowersList")
-        .add({
-      "userName": userDetails.username,
-      "userUid": userDetails.userUid,
-      "userImage": userDetails.userpic,
-    });
-  } catch (e) {
-    print("error3");
-    print(e);
-  }
+  await FirebaseFirestore.instance
+      .collection("Users")
+      .document(userDetails.docid)
+      .collection("FollowingList")
+      .add({
+    "userName": followedUser[0].username,
+    "userUid": followedUser[0].userUid,
+    "userImage": followedUser[0].userpic,
+  });
+
+  await FirebaseFirestore.instance
+      .collection("Users")
+      .document(userDetails.docid)
+      .update({"Following": (int.parse(userDetails.following) + 1).toString()});
+  userDetails.following = (int.parse(userDetails.following) + 1).toString();
   print("follow user");
-  try {
-    await FirebaseFirestore.instance
-        .collection("Users")
-        .document(followedUser[0].docid)
-        .update({
-      "Followers": (int.parse(followedUser[0].followers) + 1).toString()
-    });
-  } catch (e) {
-    print("error3");
-    print(e);
-  }
+
+  await FirebaseFirestore.instance
+      .collection("Users")
+      .document(followedUser[0].docid)
+      .collection("FollowersList")
+      .add({
+    "userName": userDetails.username,
+    "userUid": userDetails.userUid,
+    "userImage": userDetails.userpic,
+  });
+
+  print("follow user");
+
+  await FirebaseFirestore.instance
+      .collection("Users")
+      .document(followedUser[0].docid)
+      .update(
+          {"Followers": (int.parse(followedUser[0].followers) + 1).toString()});
+
   followedUser[0].followers =
       (int.parse(followedUser[0].followers) + 1).toString();
 

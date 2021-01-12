@@ -12,7 +12,9 @@ class UserDetails {
   final bool blocked;
   String following;
   String followers;
-  final String posts;
+  final String bio;
+  final String website;
+  String posts;
   List likes;
   final String docid;
 
@@ -28,6 +30,8 @@ class UserDetails {
     @required this.userpic,
     @required this.likes,
     @required this.docid,
+    @required this.bio,
+    @required this.website,
   });
 }
 
@@ -83,12 +87,15 @@ class FetchedPostDetails {
 ///////Searchd User///////////
 
 List<FetchedAllUser> allusers = [];
+List<FetchedAllUser> suggestionusers = [];
 
 List<FetchedAllUser> searchedUsers = [];
 
 class FetchedAllUser with ChangeNotifier {
   final String userEmail;
   final String userUid;
+  final String website;
+  final String bio;
   final String userpic;
   final String username;
   final String userage;
@@ -100,6 +107,8 @@ class FetchedAllUser with ChangeNotifier {
   FetchedAllUser({
     @required this.userEmail,
     @required this.followers,
+    @required this.website,
+    @required this.bio,
     @required this.following,
     @required this.blocked,
     @required this.posts,

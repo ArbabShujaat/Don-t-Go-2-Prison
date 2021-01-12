@@ -8,6 +8,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:647452955811:android:f8a1e1db8f493f152bdb16",
+        "android_client_info": {
+          "package_name": "com.S.Luwemba"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647452955811-0jv4jbkas89gj4fgbgv67g7kl4bukklv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFk7zY4uEZmek4Q6K4YWzEtGboR1rYDKQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647452955811-0jv4jbkas89gj4fgbgv67g7kl4bukklv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "647452955811-8i2p9p5fsdfc0sdun42nvhum0ocjn2cf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.taches.designApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:647452955811:android:97fd9102640682f12bdb16",
         "android_client_info": {
           "package_name": "com.taches.design_app"
@@ -30,6 +66,13 @@
             {
               "client_id": "647452955811-0jv4jbkas89gj4fgbgv67g7kl4bukklv.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "647452955811-8i2p9p5fsdfc0sdun42nvhum0ocjn2cf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.taches.designApp"
+              }
             }
           ]
         }

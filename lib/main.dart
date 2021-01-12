@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:design_app/Admin/AdminHome.dart';
 
 import 'package:design_app/Funtions.dart';
+import 'package:design_app/Screens/CropImage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -80,6 +81,8 @@ class _SplashscreenState extends State<Splashscreen> {
                     userpic: value.documents[0]["userimage"],
                     likes: value.documents[0]["Likes"],
                     blocked: value.documents[0]["Blocked"],
+                    website: value.documents[0]["Website"],
+                    bio: value.documents[0]["Bio"],
                     docid: value.documents[0].documentID,
                   )
                 });

@@ -1,16 +1,17 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:design_app/Funtions.dart';
 import 'package:design_app/Models/models.dart';
 import 'package:design_app/Screens/Following.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'Followers.dart';
+import 'PictureDetailScreen.dart';
 import 'Search/search.dart';
-
-final Color orange = Color(0XFFd45a29);
 
 class OtherUserProfile2 extends StatefulWidget {
   OtherUserProfile2({Key key}) : super(key: key);
@@ -22,29 +23,29 @@ class OtherUserProfile2 extends StatefulWidget {
 List<FetchedPostDetails> userposts = [];
 bool _isLoading = true;
 bool _buttonisLoading = false;
-
+final Color orange = Color(0XFFd45a29);
 bool following = false;
 
-List images = [
-  "assets/4.jpg",
-  "assets/f.jpg",
-  "assets/s.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-  "assets/t.jpg",
-];
+// List images = [
+//   "assets/4.jpg",
+//   "assets/f.jpg",
+//   "assets/s.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+//   "assets/t.jpg",
+// ];
 
 class _OtherUserProfile2State extends State<OtherUserProfile2> {
   @override
@@ -120,25 +121,37 @@ class _OtherUserProfile2State extends State<OtherUserProfile2> {
                                 gridDelegate:
                                     SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3),
-                                itemBuilder: (context, index) => Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(15.0)),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    child: CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                      imageUrl: userposts[index].postPic,
-                                      placeholder: (context, url) => Container(
-                                          child: Center(
-                                              child:
-                                                  new CircularProgressIndicator())),
-                                      errorWidget: (context, url, error) =>
-                                          new Icon(Icons.error),
+                                itemBuilder: (context, index) => InkWell(
+                                  onTap: () {
+                                    postDetails.clear();
+                                    postDetails.add(userposts[index]);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PicDetailScreen()),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0)),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl: userposts[index].postPic,
+                                        placeholder: (context, url) => Container(
+                                            child: Center(
+                                                child:
+                                                    new CircularProgressIndicator())),
+                                        errorWidget: (context, url, error) =>
+                                            new Icon(Icons.error),
+                                      ),
                                     ),
+                                    padding: EdgeInsets.all(8.0),
+                                    margin: EdgeInsets.all(5.0),
                                   ),
-                                  padding: EdgeInsets.all(8.0),
-                                  margin: EdgeInsets.all(5.0),
                                 ),
                               ),
                             ))
@@ -166,17 +179,14 @@ class _HeaderSectionState extends State<HeaderSection> {
           border: Border.all(color: orange, width: 3.0),
           color: Colors.white,
           borderRadius: BorderRadius.circular(25.0)),
-      height: 330,
+      height: 380,
       width: 350,
       padding: EdgeInsets.all(20.0),
       child: Column(
         children: <Widget>[
-          SizedBox(
-            height: 5.0,
-          ),
           Container(
-            height: 100,
-            width: 100,
+            height: 80,
+            width: 80,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
               image: DecorationImage(
@@ -184,7 +194,6 @@ class _HeaderSectionState extends State<HeaderSection> {
                   fit: BoxFit.cover),
             ),
           ),
-          SizedBox(height: 20),
           Container(
             alignment: Alignment.center,
             child: Text(
@@ -194,7 +203,28 @@ class _HeaderSectionState extends State<HeaderSection> {
                   fontWeight: FontWeight.bold, fontSize: 24, color: Colors.red),
             ),
           ),
-          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Bio: ",
+                  style: TextStyle(color: Colors.black),
+                ),
+                SizedBox(
+                  width: 250,
+                  height: 50.0,
+                  child: AutoSizeText(
+                    searchedUsers[0].bio,
+                    style: TextStyle(color: Colors.grey),
+                    maxLines: 2,
+                  ),
+                ),
+              ],
+            ),
+          ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -273,8 +303,23 @@ class _HeaderSectionState extends State<HeaderSection> {
               ],
             ),
           ),
-          SizedBox(
-            height: 12,
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InkWell(
+                onTap: () {
+                  print(userDetails.website);
+                  launch("https://" + searchedUsers[0].website);
+                },
+                child: Row(
+                  children: [
+                    Text("Website: "),
+                    Text(
+                      searchedUsers[0].website,
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ],
+                )),
           ),
           Container(
             child: searchedUsers[0].userUid == userDetails.userUid
@@ -286,7 +331,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                     : following
                         ? MaterialButton(
                             minWidth: 150,
-                            height: 50,
+                            height: 40,
                             shape: StadiumBorder(),
                             color: orange,
                             onPressed: () async {

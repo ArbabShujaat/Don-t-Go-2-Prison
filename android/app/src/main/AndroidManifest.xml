@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.taches.design_app">
+    package="com.S.Luwemba">
     
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
@@ -9,7 +9,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="design_app"
+        android:label="Don't Go 2 Prison"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"

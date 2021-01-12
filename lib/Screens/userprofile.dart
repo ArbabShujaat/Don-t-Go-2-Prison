@@ -1,13 +1,16 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:design_app/Funtions.dart';
 import 'package:design_app/Models/models.dart';
 import 'package:design_app/Screens/Following.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'Followers.dart';
+import 'PictureDetailScreen.dart';
 
 final Color orange = Color(0XFFd45a29);
 
@@ -47,7 +50,7 @@ class _UserProfileState extends State<UserProfile> {
   @override
   Future<void> didChangeDependencies() async {
     userposts.clear();
-    userposts = List.from(await fetchtUerPosts(searchedUsers[0].userUid));
+    userposts = List.from(await fetchtUerPosts(userDetails.userUid));
 
     setState(() {
       _isLoading = false;
@@ -111,25 +114,37 @@ class _UserProfileState extends State<UserProfile> {
                                 gridDelegate:
                                     SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3),
-                                itemBuilder: (context, index) => Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(15.0)),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    child: CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                      imageUrl: userposts[index].postPic,
-                                      placeholder: (context, url) => Container(
-                                          child: Center(
-                                              child:
-                                                  new CircularProgressIndicator())),
-                                      errorWidget: (context, url, error) =>
-                                          new Icon(Icons.error),
+                                itemBuilder: (context, index) => InkWell(
+                                  onTap: () {
+                                    postDetails.clear();
+                                    postDetails.add(userposts[index]);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PicDetailScreen()),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0)),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl: userposts[index].postPic,
+                                        placeholder: (context, url) => Container(
+                                            child: Center(
+                                                child:
+                                                    new CircularProgressIndicator())),
+                                        errorWidget: (context, url, error) =>
+                                            new Icon(Icons.error),
+                                      ),
                                     ),
+                                    padding: EdgeInsets.all(8.0),
+                                    margin: EdgeInsets.all(5.0),
                                   ),
-                                  padding: EdgeInsets.all(8.0),
-                                  margin: EdgeInsets.all(5.0),
                                 ),
                               ),
                             ))
@@ -157,7 +172,7 @@ class _HeaderSectionState extends State<HeaderSection> {
           border: Border.all(color: orange, width: 3.0),
           color: Colors.white,
           borderRadius: BorderRadius.circular(25.0)),
-      height: 330,
+      height: 380,
       width: 350,
       padding: EdgeInsets.all(20.0),
       child: Column(
@@ -171,21 +186,42 @@ class _HeaderSectionState extends State<HeaderSection> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
               image: DecorationImage(
-                  image: NetworkImage(searchedUsers[0].userpic),
-                  fit: BoxFit.cover),
+                  image: NetworkImage(userDetails.userpic), fit: BoxFit.cover),
             ),
           ),
           SizedBox(height: 20),
           Container(
             alignment: Alignment.center,
             child: Text(
-              searchedUsers[0].username,
+              userDetails.username,
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontWeight: FontWeight.bold, fontSize: 24, color: Colors.red),
             ),
           ),
           SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Bio: ",
+                  style: TextStyle(color: Colors.black),
+                ),
+                SizedBox(
+                  width: 250,
+                  height: 50.0,
+                  child: AutoSizeText(
+                    userDetails.bio,
+                    style: TextStyle(color: Colors.grey),
+                    maxLines: 2,
+                  ),
+                ),
+              ],
+            ),
+          ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -194,7 +230,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                 Column(
                   children: <Widget>[
                     Text(
-                      searchedUsers[0].posts,
+                      userDetails.posts,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
@@ -220,7 +256,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                     child: Column(
                       children: <Widget>[
                         Text(
-                          searchedUsers[0].followers,
+                          userDetails.followers,
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
@@ -246,7 +282,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                     child: Column(
                       children: <Widget>[
                         Text(
-                          searchedUsers[0].following,
+                          userDetails.following,
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
@@ -264,8 +300,23 @@ class _HeaderSectionState extends State<HeaderSection> {
               ],
             ),
           ),
-          SizedBox(
-            height: 12,
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InkWell(
+                onTap: () {
+                  print(userDetails.website);
+                  launch("https://" + userDetails.website);
+                },
+                child: Row(
+                  children: [
+                    Text("Website: "),
+                    Text(
+                      userDetails.website,
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ],
+                )),
           ),
         ],
       ),

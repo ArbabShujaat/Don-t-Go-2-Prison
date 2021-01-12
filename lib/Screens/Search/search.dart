@@ -198,6 +198,8 @@ Future<void> setsearched(String query) async {
                   username: value.documents[0]["name"],
                   userpic: value.documents[0]["userimage"],
                   blocked: value.documents[0]["Blocked"],
+                  website: value.documents[0]["Website"],
+                  bio: value.documents[0]["Bio"],
                   docid: value.documents[0].documentID,
                 )),
               },
